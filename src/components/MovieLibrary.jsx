@@ -12,7 +12,7 @@ class MovieLibrary extends React.Component {
     this.onSearchTextChange = this.onSearchTextChange.bind(this);
     this.onBookmarkedChange = this.onBookmarkedChange.bind(this);
     this.onSelectedGenreChange = this.onSelectedGenreChange.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.includeMovie = this.includeMovie.bind(this);
 
     this.state = {
       searchText: '',
@@ -22,22 +22,53 @@ class MovieLibrary extends React.Component {
     };
   }
 
-  onSearchTextChange({ target }) {
-    this.setState({ searchText: target.value });
+  onSearchTextChange = ({ target: { value } }) => {
+    this.setState({ searchText: value });
+    const { movies } = this.props;
+    this.setState({
+      movies: movies.filter((movie) => movie.title.includes(value)
+      || movie.subtitle.includes(value)
+      || movie.storyline.includes(value)),
+    });
   }
 
-  onBookmarkedChange() {
-    const { bookmarkedOnly } = this.state;
-
-    this.setState({ bookmarkedOnly: !bookmarkedOnly });
+  onBookmarkedChange = ({ target: { checked } }) => {
+    this.setState({ bookmarkedOnly: checked });
+    const { movies } = this.props;
+    if (checked) {
+      this.setState({
+        movies: movies.filter((movie) => movie.bookmarked === true),
+      });
+    } else {
+      this.setState({ movies });
+    }
   }
 
-  onSelectedGenreChange({ target }) {
-    this.setState({ selectedGenre: target.value });
+  onSelectedGenreChange({ target: { value } }) {
+    this.setState({ selectedGenre: value });
+    const { movies } = this.props;
+    if (value === 'action') {
+      this.setState({
+        movies: movies.filter((movie) => movie.genre === 'action'),
+      });
+    } else if (value === 'comedy') {
+      this.setState({
+        movies: movies.filter((movie) => movie.genre === 'comedy'),
+      });
+    } else if (value === 'thriller') {
+      this.setState({
+        movies: movies.filter((movie) => movie.genre === 'thriller'),
+      });
+    } else {
+      this.setState({ movies });
+    }
   }
 
-  onClick() {
-    console.log('olá');
+  includeMovie(newMovie) {
+    const { movies } = this.props;
+    this.setState({
+      movies: [...movies, newMovie],
+    });
   }
 
   render() {
@@ -53,8 +84,14 @@ class MovieLibrary extends React.Component {
           selectedGenre={ selectedGenre }
           onSelectedGenreChange={ this.onSelectedGenreChange }
         />
+
         <MovieList movies={ movies } />
-        <AddMovie onClick={ this.onClick } />
+
+        <AddMovie
+          onClick={ (newMovie) => {
+            this.includeMovie(newMovie);
+          } }
+        />
       </div>
     );
   }
