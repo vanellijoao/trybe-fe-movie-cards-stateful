@@ -9,8 +9,6 @@ class AddMovie extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-
     this.state = {
       title: '',
       subtitle: '',
@@ -21,14 +19,14 @@ class AddMovie extends React.Component {
     };
   }
 
-  handleChange({ target }) {
+  handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({
       [name]: value,
     });
   }
 
-  resetStates =() => {
+  resetStates = () => {
     this.setState({
       title: '',
       subtitle: '',
@@ -39,7 +37,7 @@ class AddMovie extends React.Component {
     });
   }
 
-  submitAndAdd(event) {
+  submitAndAdd = (event) => {
     event.preventDefault();
     const { onClick } = this.props;
     onClick(this.state);
